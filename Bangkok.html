@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金高電泰上癮E團</title>
+    <!-- 引入 Tailwind CSS，直接套用樣式 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 pb-20">
+
+    <!-- Header -->
+    <header class="bg-teal-700 text-white pt-8 pb-6 px-4 shadow-md rounded-b-3xl">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">
+                金高電泰上癮E團
+            </h1>
+            <p class="text-teal-100 font-medium text-sm md:text-lg">曼谷+佛統府+北碧府+桂河水上屋 6 日遊</p>
+            <p class="text-teal-200 text-xs md:text-sm mt-1">2026/09/19 - 09/24</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+        
+        <!-- Flight Information (靜態渲染) -->
+        <section class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4" id="flight-container">
+            <!-- 透過 JS 渲染 -->
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 justify-center mb-8 bg-white p-2 rounded-2xl shadow-sm border border-slate-100" id="tabs-container">
+            <!-- 透過 JS 渲染 -->
+        </div>
+
+        <!-- Content Area -->
+        <div id="app-content" class="fade-in">
+            <!-- 透過 JS 動態切換內容 -->
+        </div>
+
+    </main>
+
+    <script>
+        // --- 資料區 ---
+        const flightInfo = [
+            { from: '高雄出發', airline: '中華航空 (CI)', depart: '09/19 去程 CI 839 14:45-17:35', return: '09/24 回程 CI 840 18:35-22:55' },
+            { from: '桃園出發', airline: '星宇航空 (JX)', depart: '09/19 去程 JX 745 13:55-16:40', return: '09/24 回程 JX 746 17:50-22:40' }
+        ];
+
+        const itineraryData = [
+            { 
+                day: 'Day 1', 
+                title: '抵達曼谷', 
+                locations: [
+                    { 
+                        name: '抵達曼谷機場', 
+                        type: 'location',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrq0-hphwM8cl1COGp1VKWi8KdUw5OnUVS9E3zNt9WHQ&s=10'
+                    }, 
+                    { 
+                        name: 'Savoey Restaurant 上味泰式海鮮料理餐廳', 
+                        type: 'food',
+                        link: 'https://www.savoey.co.th/zh-hans/',
+                        image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=150&q=80'
+                    }, 
+                    { 
+                        name: 'Siam Square 暹羅廣場自由逛', 
+                        type: 'location',
+                        image: 'https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/67/2019/08/07103823/467245145_0b1d4560a2_o.jpg'
+                    }
+                ], 
+                hotel: {
+                    name: 'Jasmine 59 Hotel',
+                    link: 'https://jasminehotelgroup.com/jasmine-59-hotel-bangkok/',
+                    image: 'https://res.klook.com/image/upload/w_750,c_fill,q_85/v1709715601/hotel/fcd5jqnpx7fopdu1bwfn.jpg'
+                }, 
+                meals: { breakfast: '-', lunch: '-', dinner: '見行程' } 
+            },
+            { 
+                day: 'Day 2', 
+                title: '市集與米其林推薦', 
+                locations: [
+                    { 
+                        name: '恰圖恰週末市集', 
+                        type: 'location',
+                        image: 'https://mimigo.tw/wp-content/uploads/20170523103810_82.jpg'
+                    }, 
+                    { 
+                        name: '嵩越路自由逛', 
+                        type: 'location',
+                        image: 'https://bkk.com.tw/wp-content/uploads/20260418103946_0_0f600b.jpg'
+                    }, 
+                    { 
+                        name: 'ICONSIAM 暹羅天地', 
+                        type: 'location',
+                        image: 'https://www.bring-you.info/imgs/2020/02/iconsiam-3-900x600.jpg'
+                    }, 
+                    { 
+                        name: '18:30 傳統泰式按摩 1.5 小時', 
+                        type: 'activity',
+                        image: 'https://res.klook.com/image/upload/c_fill,w_800/20240701-163914_ioydyn.jpg'
+                    }, 
+                    { 
+                        name: '20:30 米其林推薦晚餐：Baan Somtum 宋丹之家', 
+                        type: 'food',
+                        link: 'https://baansomtum.com/en/',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnNd3XTbGqzPHdtqx84M3PtwvxtpvPGjIF32WBOmyXkUB2-DBYZlgjeYgWwuF3IVF4kuvHPvQHKG-_Mkv53rPHHx1PUvRAakruJRDV6okmFCU5IE3q8j6dSKM9E-MSXS-dhdj-pFpT7LsL_=w400-h300-k-no'
+                    }
+                ], 
+                hotel: {
+                    name: 'Jasmine 59 Hotel',
+                    link: 'https://jasminehotelgroup.com/jasmine-59-hotel-bangkok/',
+                    image: 'https://res.klook.com/image/upload/w_750,c_fill,q_85/v1709715601/hotel/fcd5jqnpx7fopdu1bwfn.jpg'
+                },
+                meals: { breakfast: '飯店享用', lunch: '自理', dinner: '見行程' } 
+            },
+            { 
+                day: 'Day 3', 
+                title: '絕美咖啡廳與北碧府', 
+                locations: [
+                    { 
+                        name: '絕美打卡聖地 Bubble In The Forest Café (送每人一杯飲料)', 
+                        type: 'coffee',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk-V7cUClaqxicQ5DKn7rCL5bE1TUzytx8dF83RrFaaYiXJV3ThUVbhnZVGRAj6m5c_I2AuAIWP4ujzHJi5QdT24o-187NJotw99O6LThbywK9RLfk9sPgyPjW4ySVqYJq4H9EMb4h_ISy5=w243-h174-n-k-no-nu'
+                    }, 
+                    { 
+                        name: '吞武里海鮮市場 (午餐在此自理)', 
+                        type: 'food',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl6QeQjyNaVswU8dtUmf28GhbLkmjY_l9DYOjv0O-9ZMBy1hL0Cd4rg3b78rE3WtJSz2zSHfFE7K-zRXOgwHrXEAgmsN8NW4oKJwn3gCmETMif6FhOITfBlWWKrU2sQxrXdr669LjRvZUE=w243-h304-n-k-no-nu'
+                    }, 
+                    { 
+                        name: '前往北碧府 → 虎穴廟', 
+                        type: 'location',
+                        image: 'https://pimg.1px.tw/tourbangkok/1487511168-2489302927.jpg'
+                    }, 
+                    { 
+                        name: '北碧府天空玻璃棧道', 
+                        type: 'location',
+                        image: 'https://files.thailandtourismdirectory.go.th/assets/upload/2022/9/30//8e6225b9-bbc7-4a12-8cf6-c961b432c555.jpg'
+                    }, 
+                    { 
+                        name: '桂河大橋', 
+                        type: 'location',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjoV32e3XlaxMRH5g7oBKd1-tavBI-KyqMWVUxeMERDIe3J3QtYpwEJkE&s=10'
+                    }, 
+                    { 
+                        name: 'Tongkan Café 網美風桂河畔餐廳晚餐', 
+                        type: 'food',
+                        link: 'https://www.facebook.com/TongKanCafe/',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWngrgKIgB5dGL_JrQlrWJWwKUjnwPIed57dWyTbOBynBGXthQaHwsGtJ9tW1dN7OyDRK7Di_c7YSzt40hsdTOL809X-QoVegbyhm9-rlizpAIyCkAplsSaLgQIR4oKXMzYjza3u3Ormp0vU=s1360-w1360-h1020'
+                    }, 
+                    { 
+                        name: 'JJ Night Market Kanchanaburi 北碧府夜市', 
+                        type: 'location',
+                        image: 'https://image.cdn-eztravel.com.tw/mvc2de96Wkil5T9xDW-br8IiuIuTwTQil8fKZ5T5qvI/g:ce/aHR0cHM6Ly92YWNhdGlvbi5jZG4tZXp0cmF2ZWwuY29tLnR3L2ltZy9WRFIvVEhfNzgxNTYyMDg5LmpwZw.jpg'
+                    }
+                ], 
+                hotel: { 
+                    name: 'The Xcape River Kwai',
+                    link: 'https://x-retreats.com',
+                    image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmvkNVgV6AHXj6RgdR21fTC2uSgiJwVPjicYubVM0DxNifQ9MMtLkKUI1tFH5J8HG0SS42ecQvoYyslj1NXZWwcluhifSJJ-3HaAYlFTGmo86K26sRvjp37U9S7XJBL4PoDusTK5mOL7ky6=s1360-w1360-h1020'
+                }, 
+                meals: { breakfast: '飯店享用', lunch: '自理', dinner: '見行程' } 
+            },
+            { 
+                day: 'Day 4', 
+                title: '動物園與死亡鐵路', 
+                locations: [
+                    { 
+                        name: 'Safari Park 北碧府賽佛瑞野生動物園', 
+                        type: 'activity',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlx7psy-ag7JhqFg8EDwb5v7Q8MhhxuTi_QgiGkRiEFS4NhwCORa9ixCP5uZnpVCj9FTV089ODIy3vBCxn02y4zOV-DSkjk1iM4RQp2q6REd5omqp4xvQqJTK967n_kk91kdEAc=s1360-w1360-h1020'
+                    }, 
+                    { 
+                        name: '死亡鐵路搭火車 + Thamkra Sae 洞穴', 
+                        type: 'location',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqzp3RdV6wEGg3pbK7KCOVlv6V0npa918SKda5gzDXQQ&s=10'
+                    }, 
+                    { 
+                        name: '道地泰式小吃午餐', 
+                        type: 'food',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8GaIYxXEi8EBjmE-Gv7hI3OGeCf46UedwazUQ1A3cBJWAgef8dwPZfIc&s=10'
+                    }, 
+                    { 
+                        name: '飯店自由活動', 
+                        type: 'location' 
+                    }, 
+                    { 
+                        name: '長頸鹿拍照時段：09:00 8人 / 09:30 7人 / 10:00 8人', 
+                        type: 'info' 
+                    }
+                ], 
+                hotel: { 
+                    name: 'The Xcape River Kwai',
+                    link: 'https://x-retreats.com',
+                    image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmvkNVgV6AHXj6RgdR21fTC2uSgiJwVPjicYubVM0DxNifQ9MMtLkKUI1tFH5J8HG0SS42ecQvoYyslj1NXZWwcluhifSJJ-3HaAYlFTGmo86K26sRvjp37U9S7XJBL4PoDusTK5mOL7ky6=s1360-w1360-h1020'
+                }, 
+                meals: { breakfast: '飯店享用', lunch: '見行程', dinner: '飯店晚餐' } 
+            },
+            { 
+                day: 'Day 5', 
+                title: '返回曼谷與百匯自助餐', 
+                locations: [
+                    { 
+                        name: '飯店自由活動', 
+                        type: 'location' 
+                    }, 
+                    { 
+                        name: 'Bang Wa 豬腳飯午餐', 
+                        type: 'food',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4BDwipeKu-aWjz9lDE6BUi8SpaI-bVyDEYKXUL3NF_7l0O8XPxgIQdnRX&s=10'
+                    }, 
+                    { 
+                        name: '返回曼谷 → Big C 超市零食大採買', 
+                        type: 'location',
+                        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTooLb0eRhWg6XjBfiR5DkR8Q4GZ9Z1qGpDlsRX9S4JtZckeS3CV8bshaA&s=10'
+                    }, 
+                    { 
+                        name: '13:30 & 15:00 Lek Massage 傳統泰式按摩 1 小時', 
+                        type: 'activity',
+                        image: 'https://cdn.myfunnow.com/imgs/branch/cover%2F15B91D27-DDA9-47FF-8E35-851BD4BF0EF6_286570.jpg'
+                    }, 
+                    { 
+                        name: 'Copper Beyond Buffet', 
+                        type: 'food',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlPLNQ58AH8io0DtWkuY_3LUJ-luHOEEDb_4puwb4dxzxMvJiXvchMCFuVlXgimtI7pxNx0PbdBs_kxyjAoZVpwypvbYCawp_TlLY8mSZeAeblA1zEiYHg2yV7I6OvlpYNI0OAdEA=s1360-w1360-h1020'
+                    }, 
+                    { 
+                        name: 'Jodd Fairs Ratchada 拉差達喬德夜市', 
+                        type: 'location',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm1B-wvr5qwrzIMGB4JBo2kpsCUZB94b6aP8Kaw7NBt3TKZSjIPBx8bgSZrcnS_vmlD_7vDVHVSUn8UfSsfFBqgJd28jVn7y2qa1wGF2XdOv_uPHGS8jJKvpKP0NCBlTuEwEJw=s1360-w1360-h1020'
+                    }
+                ], 
+                hotel: { name: 'Bangkok Marriott Marquis Queen’s Park' }, 
+                meals: { breakfast: '飯店享用', lunch: '見行程', dinner: '見行程' } 
+            },
+            { 
+                day: 'Day 6', 
+                title: '泰服體驗與賦歸', 
+                locations: [
+                    { 
+                        name: '鄭王廟 → 泰國傳統服飾體驗 (費用已含)', 
+                        type: 'activity',
+                        image: 'https://image.cdn-eztravel.com.tw/vyYynw0ZSbnhp7fv5RKkrn5eP2cskEqcy8mEtk9PPiw/g:ce/aHR0cHM6Ly92YWNhdGlvbi5jZG4tZXp0cmF2ZWwuY29tLnR3L3BvaS9USC9CS0svV2F0QXJ1bi9zaHV0dGVyc3RvY2tfMzQ2Mjk3MjA1Y21vcHJlc3MuanBn.jpg'
+                    }, 
+                    { 
+                        name: '米其林推薦午餐：Mr. Jo Crispy Pork 喬先生脆皮燒肉粿雜湯', 
+                        type: 'food',
+                        image: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnQGukfMmR3wTH5Jv_EMJ6GtfB8I3EkZgBLRePvQzYkDIzs6Fv1MUfm1OjUzcvTagSlq3hWCAIL8XgwJ5euA9watpHQwWpJNMI2IgbnxFaPJzf6JKYt46dO4imhW_YIcLcyrR4tbg=s1360-w1360-h1020'
+                    }, 
+                    { 
+                        name: 'Tha Maharaj 瑪哈拉碼頭文青市集', 
+                        type: 'location',
+                        image: 'https://imccp.com/wp-content/uploads/Photo/2023/9/bkk/savoey/21.jpg'
+                    }, 
+                    { 
+                        name: '前往曼谷機場', 
+                        type: 'location' 
+                    }
+                ], 
+                hotel: { name: '-' }, 
+                meals: { breakfast: '飯店享用', lunch: '見行程', dinner: '-' } 
+            }
+        ];
+
+        const vehicleData = [
+            { car: '第1車', members: ['蔡宛霖', '劉子瑜', '包士弘', '黃鴻智', '周宏昌', '陳怡潔', '導遊'] },
+            { car: '第2車', members: ['歐光哲', '楊育碩', '簡儀萍', '柯佳秀', '林欣', '林依', '梁新', '梁家綺'] },
+            { car: '第3車', members: ['陳毓珣', '凌意惠', '楊鈞安', '王定右', '劉峰邑', '劉昇諺', '梁菀汗'] },
+            { car: '第4車', members: ['殷健薰', '洪如雀', '許紜瑄', '楊政勳', '周青樺', '林玉棉', '林韋志', '導遊'] },
+            { car: '第5車', members: ['劉國源', '孫永誠', '孫君蓉', '李亞娟', '姚凱翔', '黃錦惠', '姚守鴻'] },
+            { car: '第6車', members: ['祁冠慧', '郭有得', '林鈺庭', '林詩涵', '鄭清印', '黃昱潔', '張笠泰', '導遊'] },
+            { car: '第7車', members: ['蔡勝利', '劉美香', '康仲堯', '顏宛儀', '洪健榮', '林宏軒', '張昱璿'] },
+        ];
+
+        const giraffeData = [
+            { time: '9:00', members: ['林宏軒', '林依', '林欣', '柯佳秀', '洪健榮', '張昱璿', '楊育碩', '簡儀萍'] },
+            { time: '9:30', members: ['孫君蓉', '祁冠慧', '許紜瑄', '林詩涵', '林鈺庭', '郭有得', '楊政勳'] },
+            { time: '10:00', members: ['陳毓珣', '周宏昌', '凌意惠', '梁家綺', '梁新', '陳怡潔', '黃昱潔', '鄭清印'] }
+        ];
+
+        const thaiDressData = [
+            { shop: 'Absolute Thai', photoGroups: [['梁家綺', '梁新'], ['陳毓珣', '凌意惠'], ['殷健薰', '洪如雀']], makeupOnly: ['林詩涵', '林鈺庭'] },
+            { shop: 'mahasane', photoGroups: [['周宏昌', '陳怡潔'], ['林依', '林欣'], ['柯佳秀', '簡儀萍']], makeupOnly: [] }
+        ];
+
+        const roomData = [
+            { id: 1, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'FALLINGWATER POOL VILLA 1 BEDROOM', typeXcape: '一大床', roomFinal: '雙人房', names: ['蔡宛霖 (副總經理)', '劉子瑜 (副總經理)'] },
+            { id: 2, typeJas: '兩小床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['黃鴻智', '歐光哲'] },
+            { id: 3, typeJas: '一大床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['包士弘', '楊育碩 (素食(蛋奶、五辛OK))'] },
+            { id: 4, typeJas: '兩小床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['簡儀萍', '柯佳秀'] },
+            { id: 5, typeJas: '一大床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '一大床', roomFinal: '雙人房', names: ['林欣', '林依 (林欣眷屬)'] },
+            { id: 6, typeJas: '一大床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['楊鈞安', '王定右'] },
+            { id: 7, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['劉國源', '林韋志'] },
+            { id: 8, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['周宏昌', '陳怡潔 (周宏昌眷屬)'] },
+            { id: 9, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['鄭清印', '黃昱潔 (鄭清印眷屬)'] },
+            { id: 10, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['康仲堯', '顏宛儀 (康仲堯眷屬)'] },
+            { id: 11, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['梁新', '梁家綺 (梁新眷屬)'] },
+            { id: 12, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['黃錦惠 (姚凱翔眷屬)', '姚守鴻 (姚凱翔眷屬)'] },
+            { id: 13, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['蔡勝利', '劉美香'] },
+            { id: 14, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['凌意惠 (陳毓珣眷屬)', '陳毓珣'] },
+            { id: 15, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['郭有得 (祁冠慧眷屬)', '祁冠慧'] },
+            { id: 16, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['許紜瑄', '楊政勳 (許紜瑄眷屬)'] },
+            { id: 17, typeJas: '一大床', roomJas: '連通房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['林宏軒', '張昱璿 (林宏軒眷屬)'] },
+            { id: 18, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['殷健薰', '洪如雀'] },
+            { id: 19, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'LUXE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['林鈺庭', '林詩涵'] },
+            { id: 20, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'POOLXIDE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['周青樺', '林玉棉'] },
+            { id: 21, typeJas: '一大床加床', roomJas: '三人房 Suite', roomXcape: 'LUXE CABIN SUITE', typeXcape: '一大床加床', roomFinal: '三人房 Suite', names: ['孫永誠', '孫君蓉 (12Y)', '李亞娟'] },
+            { id: 22, typeJas: '一大床', roomJas: '三人房 Suite', roomXcape: 'POOLXIDE CABIN SUITE', typeXcape: '一大床', roomFinal: '雙人房 Suite', names: ['劉峰邑', '劉昇諺 (9Y)', '梁菀汗'] },
+            { id: 23, typeJas: '一大床', roomJas: '單人房', roomXcape: 'POOLXIDE CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['張笠泰'] },
+            { id: 24, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['洪健榮 (不吃牛)'] },
+            { id: 25, typeJas: '一大床', roomJas: '連通房', roomXcape: 'LUXE CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['姚凱翔'] }
+        ];
+
+        const tabs = [
+            { id: 'itinerary', icon: '🗺️', label: '行程表' },
+            { id: 'rooms', icon: '🏨', label: '配房表' },
+            { id: 'vehicles', icon: '🚐', label: '配車表' },
+            { id: 'giraffes', icon: '🦒', label: '長頸鹿分組' },
+            { id: 'thaidress', icon: '📸', label: '泰服拍攝組' }
+        ];
+
+        let activeTab = 'itinerary';
+
+        // --- 渲染邏輯 ---
+
+        function getIconForType(type) {
+            switch(type) {
+                case 'food': return '🍽️';
+                case 'coffee': return '☕';
+                case 'activity': return '🌟';
+                case 'info': return '💡';
+                default: return '📍';
+            }
+        }
+
+        function setTab(tabId) {
+            activeTab = tabId;
+            renderTabs();
+            renderContent();
+            
+            // 觸發動畫
+            const contentDiv = document.getElementById('app-content');
+            contentDiv.classList.remove('fade-in');
+            void contentDiv.offsetWidth; // 觸發重繪
+            contentDiv.classList.add('fade-in');
+        }
+
+        function renderFlights() {
+            const container = document.getElementById('flight-container');
+            container.innerHTML = flightInfo.map(flight => `
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 flex items-start space-x-4">
+                    <div class="bg-teal-100 p-2 rounded-full text-teal-700 text-xl flex items-center justify-center w-10 h-10 flex-shrink-0">✈️</div>
+                    <div>
+                        <h3 class="font-bold text-base md:text-lg text-slate-800">${flight.from} <span class="text-sm md:text-base font-normal text-slate-500">(${flight.airline})</span></h3>
+                        <div class="mt-1.5 text-sm md:text-base text-slate-600 space-y-1">
+                            <p class="flex items-center"><span class="mr-1.5 text-slate-400">🕒</span> ${flight.depart}</p>
+                            <p class="flex items-center"><span class="mr-1.5 text-slate-400">🕒</span> ${flight.return}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = tabs.map(tab => `
+                <button onclick="setTab('${tab.id}')"
+                    class="flex flex-1 min-w-[100px] items-center justify-center px-3 py-2 rounded-xl font-bold text-sm md:text-base transition-all duration-200 ${
+                        activeTab === tab.id
+                        ? 'bg-teal-600 text-white shadow-md transform scale-105'
+                        : 'bg-transparent text-slate-600 hover:bg-teal-50 hover:text-teal-700'
+                    }">
+                    <span class="mr-1.5 text-lg">${tab.icon}</span>
+                    ${tab.label}
+                </button>
+            `).join('');
+        }
+
+        function renderItinerary() {
+            return `<div class="space-y-6">
+                ${itineraryData.map(day => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="bg-teal-600 px-4 py-3 text-white flex items-center justify-between">
+                            <h3 class="font-bold text-lg md:text-xl">${day.day} - ${day.title}</h3>
+                        </div>
+                        <div class="p-4 md:p-5 space-y-4">
+                            <div class="space-y-3">
+                                ${day.locations.map(loc => {
+                                    // 判斷是否為超連結，加上深藍色與底線樣式
+                                    let nameHtml = `<p class="text-slate-800 font-bold text-base md:text-lg leading-snug">${loc.name}</p>`;
+                                    if (loc.link) {
+                                        nameHtml = `<a href="${loc.link}" target="_blank" rel="noopener noreferrer" class="text-blue-800 underline font-bold text-base md:text-lg leading-snug hover:text-blue-600 transition-colors block">${loc.name}</a>`;
+                                    }
+                                    
+                                    // 圖片為適當尺寸 w-20 h-20 桌面版 w-28 h-28，不佔過多版面但清晰
+                                    let imageHtml = '';
+                                    if (loc.image) {
+                                        imageHtml = `
+                                            <div class="ml-3 md:ml-4 flex-shrink-0">
+                                                <img src="${loc.image}" onerror="this.style.display='none'" alt="${loc.name}" class="w-20 h-20 md:w-28 md:h-28 object-cover rounded-lg border border-slate-200 shadow-sm" />
+                                            </div>
+                                        `;
+                                    }
+
+                                    return `
+                                    <div class="flex items-center bg-slate-50 p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm">
+                                        <div class="text-2xl md:text-3xl leading-none self-start mt-0.5 mr-3">${getIconForType(loc.type)}</div>
+                                        <div class="flex-1 break-words whitespace-normal">
+                                            ${nameHtml}
+                                        </div>
+                                        ${imageHtml}
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            
+                            <!-- 下方住宿與餐食，字體維持合理大小 text-sm md:text-base -->
+                            <div class="pt-4 border-t border-slate-200 grid grid-cols-1 gap-4 text-sm md:text-base">
+                                <div class="flex items-start text-slate-600 bg-teal-50 p-3 md:p-4 rounded-xl">
+                                    <span class="text-xl md:text-2xl flex-shrink-0 self-start mr-2">🌙</span>
+                                    <span class="font-bold text-teal-800 flex-shrink-0 self-start mt-0.5 md:mt-1">住宿：</span>
+                                    <div class="flex-1 flex items-center justify-between gap-3 ml-1">
+                                        <span class="font-bold mt-0.5 md:mt-1">
+                                            ${day.hotel.link 
+                                                ? `<a href="${day.hotel.link}" target="_blank" class="text-blue-800 underline hover:text-blue-600 transition-colors">${day.hotel.name}</a>` 
+                                                : day.hotel.name}
+                                        </span>
+                                        ${day.hotel.image ? `<img src="${day.hotel.image}" onerror="this.style.display='none'" alt="${day.hotel.name}" class="w-16 h-16 md:w-24 md:h-24 flex-shrink-0 object-cover rounded-lg border border-slate-200 shadow-sm" />` : ''}
+                                    </div>
+                                </div>
+                                <div class="flex items-start text-slate-600 bg-orange-50 p-3 md:p-4 rounded-xl">
+                                    <span class="text-xl md:text-2xl flex-shrink-0 mr-2">🍱</span>
+                                    <span class="font-bold text-orange-800 flex-shrink-0 mt-0.5 md:mt-1">餐食：</span>
+                                    <span class="ml-1 font-bold mt-0.5 md:mt-1">早:${day.meals.breakfast} / 午:${day.meals.lunch} / 晚:${day.meals.dinner}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        function renderRooms() {
+            return `<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-x-auto">
+                <table class="w-full text-sm text-left min-w-[800px]">
+                    <thead class="bg-teal-50 text-teal-800 font-bold border-b border-teal-100">
+                        <tr>
+                            <th class="px-3 py-2 whitespace-nowrap">編號</th>
+                            <th class="px-3 py-2 whitespace-nowrap">9/19-21 Jasmine 59 Hotel</th>
+                            <th class="px-3 py-2 whitespace-nowrap">9/21-23 The Xcape River Kwai</th>
+                            <th class="px-3 py-2 whitespace-nowrap">9/23-24 (曼谷)</th>
+                            <th class="px-3 py-2 whitespace-nowrap">入住名單</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        ${roomData.map(room => `
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-3 py-2 font-bold text-slate-500 text-center text-base">${room.id}</td>
+                                <td class="px-3 py-2">
+                                    <div class="font-bold text-slate-800">${room.roomJas}</div>
+                                    <div class="text-slate-500 mt-0.5">${room.typeJas}</div>
+                                </td>
+                                <td class="px-3 py-2">
+                                    <div class="font-bold text-slate-800">${room.roomXcape}</div>
+                                    <div class="text-slate-500 mt-0.5">${room.typeXcape}</div>
+                                </td>
+                                <td class="px-3 py-2">
+                                    <div class="font-bold text-slate-800">${room.roomFinal}</div>
+                                </td>
+                                <td class="px-3 py-2 font-medium leading-relaxed">
+                                    ${room.names.map(name => `<div class="text-slate-700 whitespace-nowrap" style="min-width: 100px;">${name}</div>`).join('')}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        function renderVehicles() {
+            return `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                ${vehicleData.map(car => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 border-t-4 border-t-amber-400 hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-2 mb-3 border-b border-slate-100 pb-2">
+                            <span class="text-xl">🚐</span>
+                            <h3 class="font-bold text-base md:text-lg text-slate-800">${car.car}</h3>
+                        </div>
+                        <ul class="space-y-1.5">
+                            ${car.members.map(member => `
+                                <li class="flex items-center text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md text-sm md:text-base font-bold">
+                                    <div class="w-1.5 h-1.5 bg-amber-400 rounded-full mr-2"></div>
+                                    ${member}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        function renderGiraffes() {
+            return `<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                ${giraffeData.map(slot => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden text-center">
+                        <div class="bg-green-600 py-3 text-white">
+                            <h3 class="font-bold flex items-center justify-center text-base md:text-lg">
+                                <span class="mr-2 text-lg">⏰</span>
+                                ${slot.time} (${slot.members.length}人)
+                            </h3>
+                        </div>
+                        <div class="p-4 bg-green-50/30">
+                            <div class="grid grid-cols-2 gap-2">
+                                ${slot.members.map(member => `
+                                    <div class="bg-white border border-green-100 py-2 px-1 rounded-lg shadow-sm text-slate-700 text-sm font-bold">
+                                        ${member}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        function renderThaiDress() {
+            return `<div class="space-y-6">
+                ${thaiDressData.map(data => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-indigo-600 py-3 px-4 text-white">
+                            <h3 class="font-bold text-base md:text-lg flex items-center">
+                                <span class="mr-2 text-xl">👑</span>
+                                店家：${data.shop}
+                            </h3>
+                        </div>
+                        <div class="p-4 md:p-5">
+                            <h4 class="font-bold text-indigo-800 border-b-2 border-indigo-100 pb-1 mb-4 inline-block text-sm md:text-base">攝影分組</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                                ${data.photoGroups.map((group, i) => `
+                                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 md:p-4">
+                                        <div class="text-xs text-indigo-500 font-bold mb-2 uppercase">Group ${i + 1}</div>
+                                        ${group.map(name => `<div class="text-slate-800 font-bold text-sm ml-1 mb-1">${name}</div>`).join('')}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            ${data.makeupOnly.length > 0 ? `
+                                <h4 class="font-bold text-pink-600 border-b-2 border-pink-100 pb-1 mb-4 inline-block text-sm md:text-base">僅化妝</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    ${data.makeupOnly.map(name => `
+                                        <span class="bg-pink-50 border border-pink-200 text-pink-800 px-4 py-1.5 rounded-full text-sm font-bold">
+                                            ${name}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        function renderContent() {
+            const contentDiv = document.getElementById('app-content');
+            switch(activeTab) {
+                case 'itinerary': contentDiv.innerHTML = renderItinerary(); break;
+                case 'rooms': contentDiv.innerHTML = renderRooms(); break;
+                case 'vehicles': contentDiv.innerHTML = renderVehicles(); break;
+                case 'giraffes': contentDiv.innerHTML = renderGiraffes(); break;
+                case 'thaidress': contentDiv.innerHTML = renderThaiDress(); break;
+            }
+        }
+
+        // --- 網頁載入後執行 ---
+        document.addEventListener("DOMContentLoaded", () => {
+            renderFlights();
+            renderTabs();
+            renderContent();
+        });
+
+    </script>
+</body>
+</html>
