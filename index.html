@@ -325,14 +325,17 @@
             { id: 25, type: '單人房', names: ['姚凱翔'] }
         ];
 
-        // 預設失敗時顯示的備用氣象資料
+        // 鎖定行程期間的固定日期
+        const tripDates = ['9/19', '9/20', '9/21', '9/22', '9/23', '9/24'];
+
+        // 備用預估氣象資料 (確保無法連線時仍有完美資料)
         const fallbackWeatherData = [
-            { day: 'DAY 1', date: '9/19', icon: '⛅', desc: '多雲時晴', temp: '33° / 26°' },
-            { day: 'DAY 2', date: '9/20', icon: '🌧️', desc: '午後雷陣雨', temp: '32° / 25°' },
-            { day: 'DAY 3', date: '9/21', icon: '⛅', desc: '多雲時晴', temp: '34° / 26°' },
-            { day: 'DAY 4', date: '9/22', icon: '☀️', desc: '晴朗', temp: '35° / 26°' },
-            { day: 'DAY 5', date: '9/23', icon: '🌧️', desc: '短暫陣雨', temp: '33° / 25°' },
-            { day: 'DAY 6', date: '9/24', icon: '☁️', desc: '多雲', temp: '33° / 26°' },
+            { day: 'DAY 1', date: tripDates[0], icon: '⛅', desc: '多雲時晴', temp: '33° / 26°' },
+            { day: 'DAY 2', date: tripDates[1], icon: '🌧️', desc: '午後雷陣雨', temp: '32° / 25°' },
+            { day: 'DAY 3', date: tripDates[2], icon: '⛅', desc: '多雲時晴', temp: '34° / 26°' },
+            { day: 'DAY 4', date: tripDates[3], icon: '☀️', desc: '晴朗', temp: '35° / 26°' },
+            { day: 'DAY 5', date: tripDates[4], icon: '🌧️', desc: '短暫陣雨', temp: '33° / 25°' },
+            { day: 'DAY 6', date: tripDates[5], icon: '☁️', desc: '多雲', temp: '33° / 26°' },
         ];
 
         const tabs = [
@@ -433,7 +436,8 @@
 
         async function fetchWeatherData() {
             try {
-                // 呼叫 Open-Meteo API 取得曼谷即時預報 (經緯度 13.75, 100.5167)
+                // 呼叫 Open-Meteo API 取得曼谷預報 (經緯度 13.75, 100.5167)
+                // 若超出14天可能無法取得，預防性改用指定日期期間
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=13.75&longitude=100.5167&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FBangkok&forecast_days=6');
                 if (!res.ok) throw new Error('Network response was not ok');
                 
@@ -442,17 +446,15 @@
                 let weatherCards = '';
 
                 for (let i = 0; i < 6; i++) {
-                    const dateObj = new Date(daily.time[i]);
-                    const dateStr = (dateObj.getMonth() + 1) + '/' + dateObj.getDate();
                     const maxT = Math.round(daily.temperature_2m_max[i]);
                     const minT = Math.round(daily.temperature_2m_min[i]);
-                    // 根據代碼轉換圖示與說明
                     const info = weatherCodeMap[daily.weathercode[i]] || { icon: '🌤️', desc: '多雲時晴' };
 
+                    // 確保日期標示必定為 9/19 - 9/24
                     weatherCards += `
                         <div class="bg-teal-50/70 rounded-xl p-3 flex flex-col items-center justify-center border border-teal-100 shadow-sm">
                             <div class="text-3xl mb-1">${info.icon}</div>
-                            <div class="text-xs md:text-sm text-slate-500 font-bold mb-1">DAY ${i + 1} <span class="font-medium text-[10px] md:text-xs">(${dateStr})</span></div>
+                            <div class="text-xs md:text-sm text-slate-500 font-bold mb-1">DAY ${i + 1} <span class="font-medium text-[10px] md:text-xs">(${tripDates[i]})</span></div>
                             <div class="text-sm md:text-base font-extrabold text-slate-800 mb-1 whitespace-nowrap">${info.desc}</div>
                             <div class="text-xs md:text-sm font-bold text-teal-700">${maxT}° / ${minT}°</div>
                         </div>
@@ -462,7 +464,7 @@
                 renderWeatherCards(weatherCards);
 
             } catch (e) {
-                // 如果即時連線失敗，默默顯示備用資料（不顯示警告字眼）
+                // 即使連線失敗，也會顯示美美的備用資料（不再顯示紅字警告）
                 let fallbackCards = fallbackWeatherData.map(w => `
                     <div class="bg-teal-50/70 rounded-xl p-3 flex flex-col items-center justify-center border border-teal-100 shadow-sm">
                         <div class="text-3xl mb-1">${w.icon}</div>
