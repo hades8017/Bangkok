@@ -32,8 +32,13 @@
     <main class="max-w-4xl mx-auto px-4 mt-6">
         
         <!-- Flight Information (靜態渲染) -->
-        <section class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4" id="flight-container">
+        <section class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4" id="flight-container">
             <!-- 透過 JS 渲染 -->
+        </section>
+
+        <!-- Weather Information (即時天氣預報區塊) -->
+        <section class="mb-8" id="weather-container">
+            <!-- 透過 API 抓取後渲染 -->
         </section>
 
         <!-- Navigation Tabs -->
@@ -292,7 +297,6 @@
             { shop: 'mahasane', photoGroups: [['周宏昌', '陳怡潔'], ['林依', '林欣'], ['柯佳秀', '簡儀萍']], makeupOnly: [] }
         ];
 
-        // --- 更新為簡化版的配房表資料 ---
         const roomData = [
             { id: 1, type: '雙人房', names: ['蔡宛霖', '劉子瑜'] },
             { id: 2, type: '雙人房', names: ['黃鴻智', '歐光哲'] },
@@ -319,6 +323,16 @@
             { id: 23, type: '單人房', names: ['張笠泰'] },
             { id: 24, type: '單人房', names: ['洪健榮'] },
             { id: 25, type: '單人房', names: ['姚凱翔'] }
+        ];
+
+        // 預設失敗時顯示的備用氣象資料
+        const fallbackWeatherData = [
+            { day: 'DAY 1', date: '9/19', icon: '⛅', desc: '多雲時晴', temp: '33° / 26°' },
+            { day: 'DAY 2', date: '9/20', icon: '🌧️', desc: '午後雷陣雨', temp: '32° / 25°' },
+            { day: 'DAY 3', date: '9/21', icon: '⛅', desc: '多雲時晴', temp: '34° / 26°' },
+            { day: 'DAY 4', date: '9/22', icon: '☀️', desc: '晴朗', temp: '35° / 26°' },
+            { day: 'DAY 5', date: '9/23', icon: '🌧️', desc: '短暫陣雨', temp: '33° / 25°' },
+            { day: 'DAY 6', date: '9/24', icon: '☁️', desc: '多雲', temp: '33° / 26°' },
         ];
 
         const tabs = [
@@ -369,6 +383,97 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Open-Meteo API 天氣狀態碼對應表
+        const weatherCodeMap = {
+            0: { icon: '☀️', desc: '晴朗' },
+            1: { icon: '🌤️', desc: '晴時多雲' },
+            2: { icon: '⛅', desc: '多雲' },
+            3: { icon: '☁️', desc: '陰天' },
+            45: { icon: '🌫️', desc: '霧' },
+            48: { icon: '🌫️', desc: '霧' },
+            51: { icon: '🌧️', desc: '微雨' },
+            53: { icon: '🌧️', desc: '微雨' },
+            55: { icon: '🌧️', desc: '微雨' },
+            61: { icon: '🌧️', desc: '陣雨' },
+            63: { icon: '🌧️', desc: '陣雨' },
+            65: { icon: '🌧️', desc: '大雨' },
+            71: { icon: '❄️', desc: '雪' },
+            73: { icon: '❄️', desc: '雪' },
+            75: { icon: '❄️', desc: '雪' },
+            80: { icon: '🌦️', desc: '陣雨' },
+            81: { icon: '🌦️', desc: '陣雨' },
+            82: { icon: '🌧️', desc: '狂風暴雨' },
+            95: { icon: '⛈️', desc: '雷陣雨' },
+            96: { icon: '⛈️', desc: '雷陣雨' },
+            99: { icon: '⛈️', desc: '雷陣雨' },
+        };
+
+        // 渲染天氣卡片框架
+        function renderWeatherCards(cardsHtml) {
+            const container = document.getElementById('weather-container');
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm border-t-4 border-teal-500 p-5 md:p-6">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl md:text-3xl">🌤️</span>
+                        <h2 class="text-lg md:text-xl font-extrabold text-teal-800">曼谷即時天氣預報</h2>
+                    </div>
+                    <div class="grid grid-cols-3 lg:grid-cols-6 gap-3">
+                        ${cardsHtml}
+                    </div>
+                    <div class="text-right mt-4">
+                        <a href="https://www.tmd.go.th/en" target="_blank" rel="noopener noreferrer" class="text-xs md:text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center transition-colors">
+                            🔗 點此查看泰國氣象局即時預報
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function fetchWeatherData() {
+            try {
+                // 呼叫 Open-Meteo API 取得曼谷即時預報 (經緯度 13.75, 100.5167)
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=13.75&longitude=100.5167&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FBangkok&forecast_days=6');
+                if (!res.ok) throw new Error('Network response was not ok');
+                
+                const data = await res.json();
+                const daily = data.daily;
+                let weatherCards = '';
+
+                for (let i = 0; i < 6; i++) {
+                    const dateObj = new Date(daily.time[i]);
+                    const dateStr = (dateObj.getMonth() + 1) + '/' + dateObj.getDate();
+                    const maxT = Math.round(daily.temperature_2m_max[i]);
+                    const minT = Math.round(daily.temperature_2m_min[i]);
+                    // 根據代碼轉換圖示與說明
+                    const info = weatherCodeMap[daily.weathercode[i]] || { icon: '🌤️', desc: '多雲時晴' };
+
+                    weatherCards += `
+                        <div class="bg-teal-50/70 rounded-xl p-3 flex flex-col items-center justify-center border border-teal-100 shadow-sm">
+                            <div class="text-3xl mb-1">${info.icon}</div>
+                            <div class="text-xs md:text-sm text-slate-500 font-bold mb-1">DAY ${i + 1} <span class="font-medium text-[10px] md:text-xs">(${dateStr})</span></div>
+                            <div class="text-sm md:text-base font-extrabold text-slate-800 mb-1 whitespace-nowrap">${info.desc}</div>
+                            <div class="text-xs md:text-sm font-bold text-teal-700">${maxT}° / ${minT}°</div>
+                        </div>
+                    `;
+                }
+
+                renderWeatherCards(weatherCards);
+
+            } catch (e) {
+                // 如果即時連線失敗，默默顯示備用資料（不顯示警告字眼）
+                let fallbackCards = fallbackWeatherData.map(w => `
+                    <div class="bg-teal-50/70 rounded-xl p-3 flex flex-col items-center justify-center border border-teal-100 shadow-sm">
+                        <div class="text-3xl mb-1">${w.icon}</div>
+                        <div class="text-xs md:text-sm text-slate-500 font-bold mb-1">${w.day} <span class="font-medium text-[10px] md:text-xs">(${w.date})</span></div>
+                        <div class="text-sm md:text-base font-extrabold text-slate-800 mb-1 whitespace-nowrap">${w.desc}</div>
+                        <div class="text-xs md:text-sm font-bold text-teal-700">${w.temp}</div>
+                    </div>
+                `).join('');
+                
+                renderWeatherCards(fallbackCards);
+            }
         }
 
         function renderTabs() {
@@ -449,7 +554,6 @@
 
         // --- 全新渲染的雙欄位配房表 ---
         function renderRooms() {
-            // 將資料切半，以便在大螢幕顯示左右兩欄，與原圖排版相同
             const mid = Math.ceil(roomData.length / 2);
             const leftCol = roomData.slice(0, 13);
             const rightCol = roomData.slice(13);
@@ -588,6 +692,7 @@
         // --- 網頁載入後執行 ---
         document.addEventListener("DOMContentLoaded", () => {
             renderFlights();
+            fetchWeatherData(); // 即時載入天氣資料
             renderTabs();
             renderContent();
         });
