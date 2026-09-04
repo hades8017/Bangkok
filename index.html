@@ -292,32 +292,33 @@
             { shop: 'mahasane', photoGroups: [['周宏昌', '陳怡潔'], ['林依', '林欣'], ['柯佳秀', '簡儀萍']], makeupOnly: [] }
         ];
 
+        // --- 更新為簡化版的配房表資料 ---
         const roomData = [
-            { id: 1, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'FALLINGWATER POOL VILLA 1 BEDROOM', typeXcape: '一大床', roomFinal: '雙人房', names: ['蔡宛霖 (副總經理)', '劉子瑜 (副總經理)'] },
-            { id: 2, typeJas: '兩小床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['黃鴻智', '歐光哲'] },
-            { id: 3, typeJas: '一大床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['包士弘', '楊育碩 (素食(蛋奶、五辛OK))'] },
-            { id: 4, typeJas: '兩小床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '兩小床', roomFinal: '雙人房', names: ['簡儀萍', '柯佳秀'] },
-            { id: 5, typeJas: '一大床', roomJas: '四人房', roomXcape: 'FALLINGWATER POOL VILLA 2 BEDROOM', typeXcape: '一大床', roomFinal: '雙人房', names: ['林欣', '林依 (林欣眷屬)'] },
-            { id: 6, typeJas: '一大床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['楊鈞安', '王定右'] },
-            { id: 7, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['劉國源', '林韋志'] },
-            { id: 8, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['周宏昌', '陳怡潔 (周宏昌眷屬)'] },
-            { id: 9, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['鄭清印', '黃昱潔 (鄭清印眷屬)'] },
-            { id: 10, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['康仲堯', '顏宛儀 (康仲堯眷屬)'] },
-            { id: 11, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['梁新', '梁家綺 (梁新眷屬)'] },
-            { id: 12, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['黃錦惠 (姚凱翔眷屬)', '姚守鴻 (姚凱翔眷屬)'] },
-            { id: 13, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['蔡勝利', '劉美香'] },
-            { id: 14, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['凌意惠 (陳毓珣眷屬)', '陳毓珣'] },
-            { id: 15, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['郭有得 (祁冠慧眷屬)', '祁冠慧'] },
-            { id: 16, typeJas: '一大床', roomJas: '雙人房 JUNIOR SUITE 1 BEDROOM', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['許紜瑄', '楊政勳 (許紜瑄眷屬)'] },
-            { id: 17, typeJas: '一大床', roomJas: '連通房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['林宏軒', '張昱璿 (林宏軒眷屬)'] },
-            { id: 18, typeJas: '一大床', roomJas: '雙人房', roomXcape: 'X FLOAT LUXE CABIN', typeXcape: '一大床', roomFinal: '雙人房', names: ['殷健薰', '洪如雀'] },
-            { id: 19, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'LUXE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['林鈺庭', '林詩涵'] },
-            { id: 20, typeJas: '兩小床', roomJas: '雙人房', roomXcape: 'POOLXIDE CABIN', typeXcape: '兩小床', roomFinal: '雙人房', names: ['周青樺', '林玉棉'] },
-            { id: 21, typeJas: '一大床加床', roomJas: '三人房 Suite', roomXcape: 'LUXE CABIN SUITE', typeXcape: '一大床加床', roomFinal: '三人房 Suite', names: ['孫永誠', '孫君蓉 (12Y)', '李亞娟'] },
-            { id: 22, typeJas: '一大床', roomJas: '三人房 Suite', roomXcape: 'POOLXIDE CABIN SUITE', typeXcape: '一大床', roomFinal: '雙人房 Suite', names: ['劉峰邑', '劉昇諺 (9Y)', '梁菀汗'] },
-            { id: 23, typeJas: '一大床', roomJas: '單人房', roomXcape: 'POOLXIDE CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['張笠泰'] },
-            { id: 24, typeJas: '兩小床', roomJas: '連通房', roomXcape: 'X FLOAT CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['洪健榮 (不吃牛)'] },
-            { id: 25, typeJas: '一大床', roomJas: '連通房', roomXcape: 'LUXE CABIN', typeXcape: '一大床', roomFinal: '單人房', names: ['姚凱翔'] }
+            { id: 1, type: '雙人房', names: ['蔡宛霖', '劉子瑜'] },
+            { id: 2, type: '雙人房', names: ['黃鴻智', '歐光哲'] },
+            { id: 3, type: '雙人房', names: ['包士弘', '楊育碩'] },
+            { id: 4, type: '雙人房', names: ['簡儀萍', '柯佳秀'] },
+            { id: 5, type: '雙人房', names: ['林欣', '林依'] },
+            { id: 6, type: '雙人房', names: ['楊鈞安', '王定右'] },
+            { id: 7, type: '雙人房', names: ['劉國源', '林韋志'] },
+            { id: 8, type: '雙人房', names: ['周宏昌', '陳怡潔'] },
+            { id: 9, type: '雙人房', names: ['鄭清印', '黃昱潔'] },
+            { id: 10, type: '雙人房', names: ['康仲堯', '顏宛儀'] },
+            { id: 11, type: '雙人房', names: ['梁新', '梁家綺'] },
+            { id: 12, type: '雙人房', names: ['黃錦惠', '姚守鴻'] },
+            { id: 13, type: '雙人房', names: ['蔡勝利', '劉美香'] },
+            { id: 14, type: '雙人房', names: ['凌意惠', '陳毓珣'] },
+            { id: 15, type: '雙人房', names: ['郭有得', '祁冠慧'] },
+            { id: 16, type: '雙人房', names: ['許紜瑄', '楊政勳'] },
+            { id: 17, type: '雙人房', names: ['林宏軒', '張昱璿'] },
+            { id: 18, type: '雙人房', names: ['殷健薰', '洪如雀'] },
+            { id: 19, type: '雙人房', names: ['林鈺庭', '林詩涵'] },
+            { id: 20, type: '雙人房', names: ['周青樺', '林玉棉'] },
+            { id: 21, type: '三人房 Suite', names: ['孫永誠', '孫君蓉(12Y)', '李亞娟'] },
+            { id: 22, type: '雙人房 Suite', names: ['劉峰邑', '劉昇諺(9Y)', '梁菀汗'] },
+            { id: 23, type: '單人房', names: ['張笠泰'] },
+            { id: 24, type: '單人房', names: ['洪健榮'] },
+            { id: 25, type: '單人房', names: ['姚凱翔'] }
         ];
 
         const tabs = [
@@ -395,13 +396,11 @@
                         <div class="p-4 md:p-5 space-y-4">
                             <div class="space-y-3">
                                 ${day.locations.map(loc => {
-                                    // 判斷是否為超連結，加上深藍色與底線樣式
                                     let nameHtml = `<p class="text-slate-800 font-bold text-base md:text-lg leading-snug">${loc.name}</p>`;
                                     if (loc.link) {
                                         nameHtml = `<a href="${loc.link}" target="_blank" rel="noopener noreferrer" class="text-blue-800 underline font-bold text-base md:text-lg leading-snug hover:text-blue-600 transition-colors block">${loc.name}</a>`;
                                     }
                                     
-                                    // 圖片為適當尺寸 w-20 h-20 桌面版 w-28 h-28，不佔過多版面但清晰
                                     let imageHtml = '';
                                     if (loc.image) {
                                         imageHtml = `
@@ -423,7 +422,6 @@
                                 }).join('')}
                             </div>
                             
-                            <!-- 下方住宿與餐食，字體維持合理大小 text-sm md:text-base -->
                             <div class="pt-4 border-t border-slate-200 grid grid-cols-1 gap-4 text-sm md:text-base">
                                 <div class="flex items-start text-slate-600 bg-teal-50 p-3 md:p-4 rounded-xl">
                                     <span class="text-xl md:text-2xl flex-shrink-0 self-start mr-2">🌙</span>
@@ -449,40 +447,48 @@
             </div>`;
         }
 
+        // --- 全新渲染的雙欄位配房表 ---
         function renderRooms() {
-            return `<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-x-auto">
-                <table class="w-full text-sm text-left min-w-[800px]">
-                    <thead class="bg-teal-50 text-teal-800 font-bold border-b border-teal-100">
+            // 將資料切半，以便在大螢幕顯示左右兩欄，與原圖排版相同
+            const mid = Math.ceil(roomData.length / 2);
+            const leftCol = roomData.slice(0, 13);
+            const rightCol = roomData.slice(13);
+
+            const renderTable = (data) => `
+                <table class="w-full text-sm md:text-base text-left">
+                    <thead class="bg-teal-50 text-teal-800 font-bold border-b-2 border-teal-200">
                         <tr>
-                            <th class="px-3 py-2 whitespace-nowrap">編號</th>
-                            <th class="px-3 py-2 whitespace-nowrap">9/19-21 Jasmine 59 Hotel</th>
-                            <th class="px-3 py-2 whitespace-nowrap">9/21-23 The Xcape River Kwai</th>
-                            <th class="px-3 py-2 whitespace-nowrap">9/23-24 (曼谷)</th>
-                            <th class="px-3 py-2 whitespace-nowrap">入住名單</th>
+                            <th class="px-4 py-3 whitespace-nowrap w-16 text-center">編號</th>
+                            <th class="px-4 py-3 whitespace-nowrap">房型</th>
+                            <th class="px-4 py-3 whitespace-nowrap">姓名</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        ${roomData.map(room => `
+                        ${data.map(room => `
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-3 py-2 font-bold text-slate-500 text-center text-base">${room.id}</td>
-                                <td class="px-3 py-2">
-                                    <div class="font-bold text-slate-800">${room.roomJas}</div>
-                                    <div class="text-slate-500 mt-0.5">${room.typeJas}</div>
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="font-bold text-slate-800">${room.roomXcape}</div>
-                                    <div class="text-slate-500 mt-0.5">${room.typeXcape}</div>
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="font-bold text-slate-800">${room.roomFinal}</div>
-                                </td>
-                                <td class="px-3 py-2 font-medium leading-relaxed">
-                                    ${room.names.map(name => `<div class="text-slate-700 whitespace-nowrap" style="min-width: 100px;">${name}</div>`).join('')}
+                                <td class="px-4 py-3 font-bold text-slate-500 text-center text-lg">${room.id}</td>
+                                <td class="px-4 py-3 font-bold text-slate-800">${room.type}</td>
+                                <td class="px-4 py-3 font-medium text-slate-700">
+                                    <div class="flex flex-col space-y-1">
+                                        ${room.names.map(name => `<span>${name}</span>`).join('')}
+                                    </div>
                                 </td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
+            `;
+
+            return `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 md:p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="overflow-hidden border border-slate-200 rounded-xl shadow-sm">
+                        ${renderTable(leftCol)}
+                    </div>
+                    <div class="overflow-hidden border border-slate-200 rounded-xl shadow-sm">
+                        ${renderTable(rightCol)}
+                    </div>
+                </div>
             </div>`;
         }
 
